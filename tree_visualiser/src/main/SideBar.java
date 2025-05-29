@@ -40,11 +40,10 @@ public class SideBar extends JPanel implements MouseListener, MouseMotionListene
 	}
 
 	public void initButtons() {
-		buttons.add(new MenuButton("General Tree"));
-		buttons.add(new MenuButton("Binary Tree"));
-		buttons.add(new MenuButton("Binary Search Tree"));
-		buttons.add(new MenuButton("Balanced Tree"));
-		buttons.add(new MenuButton("Binary Heap"));
+		
+		buttons.add(new MenuButton("DFA"));
+		buttons.add(new MenuButton("Mealy"));
+		buttons.add(new MenuButton("Moore"));
 		
 		for(MenuButton button : buttons) {
 			button.setX(sideBarWidth/2-button.getWidth()/2);

@@ -1,7 +1,6 @@
 package main;
 
 import java.awt.Color;
-import java.awt.Cursor;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -21,6 +20,8 @@ import javax.swing.Timer;
 import objects.Edge;
 import objects.Popup;
 import objects.Vertex;
+import ui.ObjectPanel;
+import ui.TransitionWindow;
 
 public class Workspace extends JPanel implements ActionListener, MouseListener, MouseMotionListener, KeyListener {
 	private static final long serialVersionUID = 1L;
@@ -36,6 +37,8 @@ public class Workspace extends JPanel implements ActionListener, MouseListener, 
 	Vertex vertexA, vertexB;
 	boolean addingEdge = false;
 	int edgeState = 0;
+
+	String alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
 	public Workspace() {
 		timer = new Timer(8, this);
@@ -105,7 +108,7 @@ public class Workspace extends JPanel implements ActionListener, MouseListener, 
 				if (vertex.isIn(e.getX(), e.getY())) {
 					vertex.setActive(true);
 					activeMsg = vertex.getData();
-					if(!recentVertices.contains(vertex))
+					if (!recentVertices.contains(vertex))
 						recentVertices.add(vertex);
 
 					int currentCount = 1;
@@ -129,31 +132,54 @@ public class Workspace extends JPanel implements ActionListener, MouseListener, 
 			if (item.isIn(e.getX(), e.getY())) {
 				switch (item.getText()) {
 				case "Add Vertex":
-					vertices.add(new Vertex(e.getX(), e.getY(), recentVertices.size() + "x"));
+					String demoData = "!";
+					if (vertices.size() < 26)
+						demoData = alphabet.charAt(vertices.size()) + "";
+
+					vertices.add(new Vertex(e.getX(), e.getY(), demoData));
+					ObjectPanel.getVertices().add(new Vertex(e.getX(), e.getY(), demoData));
+					recentVertices.clear();
 					break;
 				case "Add Edge":
 					addingEdge = true;
 					addEdge();
+					break;
+				case "Add Transition":
+					new TransitionWindow();
 					break;
 				default:
 					popup.setVisible(false);
 				}
 				popup.setVisible(false);
 			}
+		
+		if(canHidePopup(e)) {
+			popup.setVisible(false);
+			
+			if (e.getX() < getWidth() - popup.getWidth()) {
+				popup.setX(e.getX() + popup.getWidth() / 2);
+				popup.setY(e.getY() - popup.getHeight() / 2);
+			} else {
+				popup.setX(getWidth() - popup.getWidth());
+				popup.setY(e.getY() - popup.getHeight() / 2);
+			}
+		}
 
 	}
 
 	private void addEdge() {
 		try {
-			while(recentVertices.size() > 2)
+			while (recentVertices.size() > 2)
 				recentVertices.remove(0);
-			
+
 			vertexA = recentVertices.get(0);
 			vertexB = recentVertices.get(1);
-			
+
+			vertexA.linkFx();
+			vertexB.linkFx();
 			Edge edge = new Edge(vertexA, vertexB);
 			edges.add(edge);
-			
+
 			recentVertices.clear();
 		} catch (Exception e) {
 
@@ -170,7 +196,7 @@ public class Workspace extends JPanel implements ActionListener, MouseListener, 
 
 	@Override
 	public void mouseEntered(MouseEvent e) {
-		setCursor(new Cursor(Cursor.HAND_CURSOR));
+		//setCursor(new Cursor(Cursor.HAND_CURSOR));
 	}
 
 	@Override
@@ -216,6 +242,7 @@ public class Workspace extends JPanel implements ActionListener, MouseListener, 
 					item.activate();
 				else
 					item.deactivate();
+
 	}
 
 	@Override
@@ -240,5 +267,12 @@ public class Workspace extends JPanel implements ActionListener, MouseListener, 
 	public void keyReleased(KeyEvent e) {
 		// TODO Auto-generated method stub
 
+	}
+	
+	public boolean canHidePopup(MouseEvent e) {
+		for (Popup.PopupItem item : popup.getItems())
+			if (item.isIn(e.getX(), e.getY()))
+				return false;
+		return true;
 	}
 }

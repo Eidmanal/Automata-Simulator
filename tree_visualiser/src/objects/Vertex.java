@@ -1,9 +1,11 @@
 package objects;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Rectangle;
 
 public class Vertex {
@@ -18,6 +20,7 @@ public class Vertex {
 	private String data;
 	private Vertex parent = null, child = null;
 	private boolean isActive = false;
+	private boolean justLinked = false;
 
 	public Vertex(int x, int y, String data) {
 		this.x = x;
@@ -34,6 +37,8 @@ public class Vertex {
 	}
 
 	public void draw(Graphics g) {
+		Graphics2D g2d = (Graphics2D)g;
+		
 		g.setColor(getBgColor());
 		g.fillOval(x, y, size, size);
 
@@ -41,6 +46,16 @@ public class Vertex {
 		Font font = new Font("Arial Black", Font.PLAIN, 18);
 		g.setFont(font);
 
+		float dashPattern[] = {6, 6};
+		
+		if(justLinked) {
+			g.setColor(new Color(255, 255, 255, 70));
+			g2d.setStroke(new BasicStroke(1, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, 10, dashPattern, 0));
+			g.drawOval(x-8, y-8, size+16, size+16);
+		}
+		g.setColor(getFgColor());
+		
+		
 		FontMetrics fm = g.getFontMetrics();
 		int textWidth = fm.stringWidth(data);
 		int textHeight = fm.getHeight();
@@ -125,11 +140,19 @@ public class Vertex {
 	public void invertColors() {
 		setBgColor(new Color(255, 255, 255));
 		setFgColor(new Color(80, 140, 200));
+		justLinked = false;
 	}
 
 	public void revertColors() {
 		setBgColor(new Color(80, 140, 200));
 		setFgColor(new Color(255, 255, 255));
+		justLinked = false;
+	}
+	
+	public void linkFx() {
+		setBgColor(new Color(245, 200, 50));
+		setFgColor(new Color(255, 255, 255));	
+		justLinked = true;
 	}
 
 	public boolean isActive() {

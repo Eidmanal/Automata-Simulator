@@ -25,9 +25,10 @@ public class Popup {
 	
 	private void initItems() {
 		items.add(new PopupItem("Add Edge", 0));
-		items.add(new PopupItem("Add Vertex", 20));
-		items.add(new PopupItem("Edit Vertex", 40));
-		items.add(new PopupItem("Delete Vertex", 60));
+		items.add(new PopupItem("Add Transition", 20));
+		items.add(new PopupItem("Add Vertex", 40));
+		items.add(new PopupItem("Edit Vertex", 60));
+		items.add(new PopupItem("Delete Vertex", 80));
 		
 		height = items.size() * 20;
 	}
