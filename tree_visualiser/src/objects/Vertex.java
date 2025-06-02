@@ -14,11 +14,10 @@ public class Vertex {
 	private int y;
 	private int size = 50;
 
-	private Color bgColor = new Color(80, 140, 200);
+	private Color bgColor = new Color(90, 180, 180);
 	private Color fgColor = new Color(255, 255, 255);
 
 	private String data;
-	private Vertex parent = null, child = null;
 	private boolean isActive = false;
 	private boolean justLinked = false;
 
@@ -43,7 +42,7 @@ public class Vertex {
 		g.fillOval(x, y, size, size);
 
 		g.setColor(getFgColor());
-		Font font = new Font("Arial Black", Font.PLAIN, 18);
+		Font font = new Font("Bauhaus 93", Font.PLAIN, 18);
 		g.setFont(font);
 
 		float dashPattern[] = {6, 6};
@@ -114,22 +113,6 @@ public class Vertex {
 		this.data = data;
 	}
 
-	public Vertex getParent() {
-		return parent;
-	}
-
-	public void setParent(Vertex parent) {
-		this.parent = parent;
-	}
-
-	public Vertex getChild() {
-		return child;
-	}
-
-	public void setChild(Vertex child) {
-		this.child = child;
-	}
-
 	@Override
 	public String toString() {
 		// return "Vertex [data=" + data + ", parent=" + parent.getData() + ", child=" +
@@ -139,13 +122,18 @@ public class Vertex {
 
 	public void invertColors() {
 		setBgColor(new Color(255, 255, 255));
-		setFgColor(new Color(80, 140, 200));
+		setFgColor(new Color(90, 180, 180));		
 		justLinked = false;
 	}
 
 	public void revertColors() {
-		setBgColor(new Color(80, 140, 200));
+		setBgColor(new Color(90, 180, 180));
 		setFgColor(new Color(255, 255, 255));
+		
+		//TODO Set for final state
+		//setBgColor(new Color(255, 100, 100));
+		//setFgColor(new Color(250, 240, 200));
+		
 		justLinked = false;
 	}
 	
@@ -161,6 +149,14 @@ public class Vertex {
 
 	public void setActive(boolean isActive) {
 		this.isActive = isActive;
+	}
+
+	public int getRadius() {
+		return getSize()/2;
+	}
+	
+	public boolean equals(Vertex vertex) {
+		return this.getData().equals(vertex.getData());
 	}
 
 }

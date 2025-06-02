@@ -23,13 +23,13 @@ public class SideBar extends JPanel implements MouseListener, MouseMotionListene
 
 	Timer timer;
 	ArrayList<MenuButton> buttons = new ArrayList<>();
-	
+
 	int sideBarWidth = 200;
-	
+
 	public SideBar() {
 		timer = new Timer(0, this);
 		timer.start();
-		
+
 		Dimension size = new Dimension(sideBarWidth, getHeight());
 		setPreferredSize(size);
 
@@ -40,14 +40,14 @@ public class SideBar extends JPanel implements MouseListener, MouseMotionListene
 	}
 
 	public void initButtons() {
-		
+
 		buttons.add(new MenuButton("DFA"));
 		buttons.add(new MenuButton("Mealy"));
 		buttons.add(new MenuButton("Moore"));
-		
-		for(MenuButton button : buttons) {
-			button.setX(sideBarWidth/2-button.getWidth()/2);
-			button.setY(buttons.indexOf(button)*button.getHeight());
+
+		for (MenuButton button : buttons) {
+			button.setX(sideBarWidth / 2 - button.getWidth() / 2);
+			button.setY(buttons.indexOf(button) * button.getHeight());
 		}
 	}
 
@@ -98,14 +98,14 @@ public class SideBar extends JPanel implements MouseListener, MouseMotionListene
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		timer.start();
-		
+
 		repaint();
 	}
 
 	@Override
 	public void mouseDragged(MouseEvent e) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override

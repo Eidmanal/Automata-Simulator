@@ -2,13 +2,14 @@ package handlers;
 
 import javax.swing.LookAndFeel;
 import javax.swing.UIManager;
+import com.formdev.flatlaf.FlatDarkLaf;
 
 public class UITheme {
     static LookAndFeel old = UIManager.getLookAndFeel();
     
-	public static void windows() {
+	public static void darkTheme() {
         try {
-			UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
+			UIManager.setLookAndFeel(new FlatDarkLaf());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

@@ -18,6 +18,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 
 import handlers.UITheme;
+import objects.Transition;
 import objects.Vertex;
 
 @SuppressWarnings("serial")
@@ -26,7 +27,7 @@ public class TransitionWindow extends JDialog {
 
 	public TransitionWindow() {
 		Image icon = Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icon.png"));
-		UITheme.windows();
+		UITheme.darkTheme();
 
 		JPanel[] panels = new JPanel[3];
 
@@ -93,15 +94,26 @@ public class TransitionWindow extends JDialog {
 		});
 
 		done.addActionListener(e -> {
+			Vertex startVertex = new Vertex(0, 0, "");
+			Vertex endVertex = new Vertex(0, 0, "");
+			
+			for(Vertex vertex : ObjectPanel.vertices) {
+				if(vertex.getData().equals(vertexBox.getSelectedItem()))
+					startVertex = vertex;
+				if(vertex.getData().equals(endVertexBox.getSelectedItem()))
+					endVertex = vertex;
+			}
+			Transition transition = new Transition(startVertex, endVertex, input.getText(), output.getText());
+			ObjectPanel.transitions.add(transition);
+			closing = true;
 			dispose();
 		});
 
 		UITheme.crossPlatform();
 		setTitle("New Transition");
-		setLayout(new GridLayout(3, 1, 5, 5));
+		setLayout(new GridLayout(3, 1, 0, 0));
 		setSize(400, 300);
 		setIconImage(icon);
-		setAlwaysOnTop(!true);
 		setResizable(false);
 		setLocationRelativeTo(null);
 		setVisible(true);

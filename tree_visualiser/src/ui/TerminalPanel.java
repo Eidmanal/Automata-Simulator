@@ -1,6 +1,10 @@
 package ui;
 
 import javax.swing.*;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.Style;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyledDocument;
 
 import handlers.UITheme;
 
@@ -11,7 +15,7 @@ import java.util.ArrayList;
 
 public class TerminalPanel extends JPanel {
 	private static final long serialVersionUID = 1L;
-	private JTextArea outputArea;
+	private JTextPane outputArea;
     private JTextField inputField;
 
     public TerminalPanel() {
@@ -19,13 +23,13 @@ public class TerminalPanel extends JPanel {
         setPreferredSize(new Dimension(1000, 120));
         setBorder(BorderFactory.createEmptyBorder());
         
-        outputArea = new JTextArea();
+        outputArea = new JTextPane();
         outputArea.setEditable(false);
-        outputArea.setBackground(new Color(0, 12, 27));
+        outputArea.setBackground(new Color(10, 20, 27));
         outputArea.setForeground(Color.white);
         outputArea.setFont(new Font("Monospaced", Font.PLAIN, 12));
         
-        UITheme.windows();
+        UITheme.darkTheme();
         
         JScrollPane scrollPane = new JScrollPane(outputArea);
         scrollPane.setBorder(BorderFactory.createEmptyBorder());
@@ -40,23 +44,33 @@ public class TerminalPanel extends JPanel {
         add(scrollPane, BorderLayout.CENTER);
         add(inputField, BorderLayout.SOUTH);
 
-        appendOutput("<Command Terminal>\n");
+        appendOutput("<Command Terminal>\n", Color.WHITE);
     }
 
     private void runCommand(String input) {
         inputField.setText("");
-        appendOutput("\n> " + input + "\n");
+        appendOutput("\n> ", new Color(180, 85, 10));
+        appendOutput(input + "\n", Color.WHITE);
 
         if (input.equals("exit")) {
-            appendOutput("Exiting...\n");
+            appendOutput("Exiting...\n", new Color(20, 85, 130));
             System.exit(0);
             return;
         }
 
         // Use ProcessBuilder to run system commands
         try {
-            List<String> command = splitCommand(input);
-            ProcessBuilder builder = new ProcessBuilder(command);
+        	List<String> command = new ArrayList<>();
+        	if (System.getProperty("os.name").toLowerCase().contains("win")) {
+        	    command.add("cmd.exe");
+        	    command.add("/c");
+        	} else {
+        	    command.add("bash");
+        	    command.add("-c");
+        	}
+        	command.add(input);
+        	ProcessBuilder builder = new ProcessBuilder(command);
+
             builder.directory(new File(System.getProperty("user.dir")));
 
             Process process = builder.start();
@@ -67,7 +81,7 @@ public class TerminalPanel extends JPanel {
 
             process.waitFor();
         } catch (Exception ex) {
-            appendOutput("Error: " + ex.getMessage() + "\n");
+            appendOutput("Error: " + ex.getMessage() + "\n", Color.RED);
         }
     }
 
@@ -76,26 +90,29 @@ public class TerminalPanel extends JPanel {
             try (BufferedReader reader = new BufferedReader(new InputStreamReader(stream))) {
                 String line;
                 while ((line = reader.readLine()) != null) {
-                    appendOutput((isError ? "[error] " : "") + line + "\n");
+                    appendOutput(line + "\n", isError ? Color.RED : Color.WHITE);
                 }
             } catch (IOException ex) {
-                appendOutput("Stream error: " + ex.getMessage() + "\n");
+                appendOutput("Stream error: " + ex.getMessage() + "\n", Color.RED);
             }
         }).start();
     }
 
-    private void appendOutput(String text) {
-        SwingUtilities.invokeLater(() -> outputArea.append(text));
+
+    private void appendOutput(String text, Color color) {
+        SwingUtilities.invokeLater(() -> {
+            StyledDocument doc = outputArea.getStyledDocument();
+            Style style = outputArea.addStyle("style", null);
+            StyleConstants.setForeground(style, color);
+            try {
+                doc.insertString(doc.getLength(), text, style);
+            } catch (BadLocationException e) {
+                e.printStackTrace();
+            }
+        });
     }
 
-    private List<String> splitCommand(String input) {
-        // Basic splitting by space (does not handle quotes)
-        List<String> result = new ArrayList<>();
-        for (String part : input.trim().split("\\s+")) {
-            if (!part.isEmpty()) result.add(part);
-        }
-        return result;
-    }
+
 
 
 }
