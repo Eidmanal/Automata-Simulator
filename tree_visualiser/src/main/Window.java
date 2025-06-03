@@ -29,6 +29,7 @@ import objects.Transition;
 import objects.Vertex;
 import ui.Frame;
 import ui.ObjectPanel;
+import ui.Ribbon;
 import ui.TerminalPanel;
 
 public class Window extends Frame {
@@ -52,7 +53,7 @@ public class Window extends Frame {
 			add(new SideBar(), BorderLayout.WEST);
 
 			JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, scrollPane, terminal);
-			splitPane.setResizeWeight(0.8);
+			//splitPane.setResizeWeight(0.8);
 			splitPane.setDividerLocation(400);
 			splitPane.setDividerSize(8);
 			splitPane.setBackground(new Color(30, 30, 40));
@@ -65,6 +66,8 @@ public class Window extends Frame {
 
 			initMenuBar();
 
+			add(new Ribbon(), BorderLayout.NORTH);
+			
 			setTitle("Sim-Aton");
 			setJMenuBar(mb);
 			setSize(900, 600);
@@ -72,13 +75,13 @@ public class Window extends Frame {
 			setLocationRelativeTo(null);
 			setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			setVisible(true);
-
+			SwingUtilities.invokeLater(() -> splitPane.setDividerLocation(0.75));
 		});
 	}
 
 	private void initMenuBar() {
 
-		String[][] menuData = { { "File", "New", "Open", "-", "Save", "Save As...", "-", "Exit" },
+		String[][] menuData = { { "File", "New", "Open", "-", "Save", "Save As...", "-", "Export", "-", "Exit" },
 				{ "Edit", "Preferences", "-", "Undo", "Redo", "-", "Cut", "Copy", "Paste", "-", "Delete" } };
 
 		for (String[] menu : menuData)
@@ -145,7 +148,6 @@ public class Window extends Frame {
 		}
 
 	}
-
 	
 	public void save() {
 		if(thisFile == null)
