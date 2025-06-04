@@ -1,12 +1,6 @@
-/main/
 /ui/
-/objects/
-/add state.png
-/paste.png
-/save.png
-/delete state.png
-/open.png
-/cut.png
-/copy.png
-/new.png
-/run.png
+/add transition.png
+/delete transition.png
+/main/
+/redo.png
+/undo.png
